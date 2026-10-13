@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Disbursements | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-truck-fast"></i> Disbursement Records
+        </h3>
+        <p class="text-muted">Track all farm input distributions</p>
+    </div>
+
+    <a href="{{ url_for('add_disbursement') }}" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> New Disbursement
+    </a>
+
+</div>
+
+<div class="dashboard-card">
+
+    <!-- Filters -->
+    <div class="row mb-3 g-2">
+
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search farmer or ID...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Inputs</option>
+                <option>Fertilizer</option>
+                <option>Seeds</option>
+                <option>Chemicals</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Farmer</th>
+                    <th>Inputs</th>
+                    <th>Quantity</th>
+                    <th>Date</th>
+                    <th>Recorded By</th>
+                    <th>Status</th>
+                    <!-- <th>Actions</th> -->
+                </tr>
+            </thead>
+
+            <tbody>
+
+    {% if disbursements|length == 0 %}
+
+        <tr>
+            <td colspan="8" class="text-center text-muted">
+                No disbursement records found.
+            </td>
+        </tr>
+
+    {% endif %}
+
+    {% for disbursement in disbursements %}
+
+    <tr>
+
+        <!-- Disbursement ID -->
+        <td>
+            D{{ "%03d"|format(disbursement.id) }}
+        </td>
+
+        <!-- Farmer Name -->
+        <td>
+            {{ disbursement.farmer.full_name }}
+        </td>
+
+        <!-- Inputs -->
+        <td>
+
+            {% if disbursement.fertilizer_type %}
+                Fertilizer ({{ disbursement.fertilizer_type }})
+            {% elif disbursement.seed_type %}
+                Seeds ({{ disbursement.seed_type }})
+            {% elif disbursement.chemical_type %}
+                Chemicals ({{ disbursement.chemical_type }})
+            {% else %}
+                N/A
+            {% endif %}
+
+        </td>
+
+        <!-- Quantity -->
+        <td>
+
+            {% if disbursement.fertilizer_bags %}
+                {{ disbursement.fertilizer_bags }} Bags
+            {% elif disbursement.seeds_kg %}
+                {{ disbursement.seeds_kg }} Kg
+            {% elif disbursement.chemicals_litres %}
+                {{ disbursement.chemicals_litres }} Litres
+            {% else %}
+                N/A
+            {% endif %}
+
+        </td>
+
+        <!-- Date -->
+        <td>
+            {{ disbursement.disbursement_date }}
+        </td>
+
+        <!-- Recorded By -->
+        <td>
+            {{ session['user'] }}
+        </td>
+
+        <!-- Status -->
+        <td>
+            <span class="badge bg-success">
+                Delivered
+            </span>
+        </td>
+
+        <!-- Actions -->
+        <!-- <td>
+
+            <button class="btn btn-sm btn-primary">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+
+            <button class="btn btn-sm btn-warning">
+                <i class="fa-solid fa-pen"></i>
+            </button>
+
+            <button class="btn btn-sm btn-danger">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+
+        </td> -->
+
+    </tr>
+
+    {% endfor %}
+
+</tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Create User | E-Farm System{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+
+<div class="mb-4">
+    <h3 class="fw-bold text-success">
+        <i class="fa-solid fa-user-plus"></i> Create New User
+    </h3>
+    <p class="text-muted">Create a new system user and assign an account type.</p>
+</div>
+
+<!-- Create User Card -->
+
+<div class="dashboard-card">
+
+
+<form action="{{ url_for('add_user') }}" method="POST">
+
+    <div class="row g-4">
+
+        <!-- Username -->
+        <div class="col-md-6">
+            <label class="form-label">Username</label>
+            <input
+                name="username"
+                type="text"
+                class="form-control"
+                placeholder="Enter username"
+                required
+            >
+        </div>
+
+        <!-- Password -->
+        <div class="col-md-6">
+            <label class="form-label">Password</label>
+            <input
+                name="password"
+                type="password"
+                class="form-control"
+                placeholder="Enter password"
+                required
+            >
+        </div>
+
+        <!-- Account Type -->
+        <div class="col-md-6">
+            <label class="form-label">Account Type</label>
+            <select name="account_type" class="form-select" required>
+                <option value="">Select Account Type</option>
+                <option value="administrator">Administrator</option>
+                <option value="registration officer">Registration Officer</option>
+                <option value="disbursement officer">Disbursement Officer</option>
+                <option value="collection officer">Collection Officer</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Submit Buttons -->
+    <div class="mt-4 d-flex justify-content-between">
+
+        <button type="reset" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+
+        <button type="submit" class="btn btn-success">
+            <i class="fa-solid fa-user-plus"></i> Create User
+        </button>
+
+    </div>
+
+</form>
+
+
+</div>
+
+<!-- Current Users Section -->
+
+<div class="mt-5 mb-4">
+
+
+<h3 class="fw-bold text-success">
+    <i class="fa-solid fa-users"></i> Current Users
+</h3>
+
+<p class="text-muted">
+    View and manage users currently registered in the system.
+</p>
+
+
+</div>
+
+<!-- Users Table -->
+
+<div class="dashboard-card">
+
+
+<div class="table-responsive">
+
+    <table class="table table-hover align-middle mb-0">
+
+        <thead class="table-success">
+
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Account Type</th>
+                <th class="text-center">Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% if users %}
+
+                {% for user in users %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+
+                    <td>
+                        <i class="fa-solid fa-user text-success me-2"></i>
+                        {{ user.username }}
+                    </td>
+
+                    <td>
+                        {% if user.account_type == 'administrator' %}
+                            <span class="badge bg-danger">
+                                Administrator
+                            </span>
+
+                        {% elif user.account_type == 'registration officer' %}
+                            <span class="badge bg-primary">
+                                Registration Officer
+                            </span>
+
+                        {% elif user.account_type == 'disbursement officer' %}
+                            <span class="badge bg-warning text-dark">
+                                Disbursement Officer
+                            </span>
+
+                        {% elif user.account_type == 'collection officer' %}
+                            <span class="badge bg-info text-dark">
+                                Collection Officer
+                            </span>
+
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                {{ user.account_type }}
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+
+                        <!-- Edit -->
+                        <a
+                            href="{{ url_for('edit_user', user_id=user.id) }}"
+                            class="btn btn-sm btn-outline-primary me-1"
+                            title="Edit User"
+                        >
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Edit
+                        </a>
+
+                        <!-- Delete -->
+                        <form
+                            action="{{ url_for('delete_user', user_id=user.id) }}"
+                            method="POST"
+                            class="d-inline"
+                            onsubmit="return confirm('Are you sure you want to delete this user?');"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-sm btn-outline-danger"
+                                title="Delete User"
+                            >
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">
+                        <i class="fa-solid fa-users-slash fa-2x mb-2"></i>
+                        <br>
+                        No users found.
+                    </td>
+                </tr>
+
+            {% endif %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+</div>
+
+{% endblock %}

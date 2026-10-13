@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Repayments | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-money-bill-wave"></i> Loan Repayments
+        </h3>
+        <p class="text-muted">Monitor farmer repayments and outstanding balances</p>
+    </div>
+
+    <a href="{{ url_for('add_payment') }}" class="btn btn-warning">
+        <i class="fa-solid fa-plus"></i> New Payment
+    </a>
+
+</div>
+
+<div class="dashboard-card">
+
+    <!-- Filters -->
+    <div class="row mb-3 g-2">
+
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search farmer or ID...">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select">
+                <option>All Status</option>
+                <option>Paid</option>
+                <option>Partial</option>
+                <option>Outstanding</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="month" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-warning">
+                <tr>
+                    <th>ID</th>
+                    <th>Farmer</th>
+                    <th>Amount Paid</th>
+                    <th>Balance</th>
+                    <th>Month</th>
+                    <th>Date</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% if repayments|length == 0 %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted">
+                        No repayment records found.
+                    </td>
+                </tr>
+                {% endif %}
+
+                {% for repayment in repayments %}
+                <tr>
+
+                    <td>P{{ "%03d"|format(repayment.id) }}</td>
+
+                    <td>{{ repayment.farmer.full_name }}</td>
+
+                    <td>K {{ "{:,.0f}".format(repayment.amount_paid) }}</td>
+
+                    <td>K {{ "{:,.0f}".format(repayment.balance) }}</td>
+
+                    <td>{{ repayment.payment_month }}</td>
+
+                    <td>{{ repayment.payment_date }}</td>
+
+                    <td>{{ repayment.payment_method }}</td>
+
+                    <td>
+                        {% if repayment.balance <= 0 %}
+                            <span class="badge bg-success">Paid</span>
+                        {% elif repayment.amount_paid > 0 %}
+                            <span class="badge bg-warning text-dark">Partial</span>
+                        {% else %}
+                            <span class="badge bg-danger">Outstanding</span>
+                        {% endif %}
+                    </td>
+
+                   
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

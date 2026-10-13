@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Repayment Report | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-money-bill-wave"></i> Repayment Report
+        </h3>
+        <p class="text-muted">Summary of all loan repayments and outstanding balances</p>
+    </div>
+
+</div>
+
+<div class="dashboard-card">
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="p-3 bg-success text-white rounded-3">
+                <h5>Total Collected</h5>
+                <h2>K {{ "{:,.0f}".format(total_collected) }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-3 bg-warning text-dark rounded-3">
+                <h5>Partial Payments</h5>
+                <h2>{{ partial_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-3 bg-danger text-white rounded-3">
+                <h5>Outstanding Loans</h5>
+                <h2>K {{ "{:,.0f}".format(outstanding_total) }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FILTERS -->
+    <form method="GET" class="row mb-3 g-2">
+
+        <div class="col-md-4">
+            <input 
+                type="text"
+                name="search"
+                value="{{ request.args.get('search','') }}"
+                class="form-control"
+                placeholder="Search farmer or ID..."
+            >
+        </div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option>Paid</option>
+                <option>Partial</option>
+                <option>Outstanding</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="month" name="month" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+        </div>
+
+    </form>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-warning">
+                <tr>
+                    <th>ID</th>
+                    <th>Farmer</th>
+                    <th>Amount Paid</th>
+                    <th>Balance</th>
+                    <th>Month</th>
+                    <th>Date</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for r in repayments %}
+
+                <tr>
+
+                    <td>P{{ "%03d"|format(r.id) }}</td>
+
+                    <td>{{ r.farmer.full_name }}</td>
+
+                    <td>K {{ "{:,.0f}".format(r.amount_paid) }}</td>
+
+                    <td>K {{ "{:,.0f}".format(r.balance) }}</td>
+
+                    <td>{{ r.payment_month }}</td>
+                    <td>{{ r.payment_date }}</td>
+                    <td>{{ r.payment_method }}</td>
+
+                    <td>
+                        {% if r.balance <= 0 %}
+                            <span class="badge bg-success">Paid</span>
+                        {% elif r.amount_paid > 0 %}
+                            <span class="badge bg-warning text-dark">Partial</span>
+                        {% else %}
+                            <span class="badge bg-danger">Outstanding</span>
+                        {% endif %}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

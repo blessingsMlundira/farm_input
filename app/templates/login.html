@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Login | E-Farm System{% endblock %}
+
+{% block extra_css %}
+<style>
+
+    body{
+        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1470&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .sidebar,
+    .top-navbar,
+    footer{
+        display:none;
+    }
+
+    .main-content{
+        margin-left:0;
+        padding:0;
+    }
+
+    .login-container{
+        min-height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:20px;
+    }
+
+    .login-card{
+        width:100%;
+        max-width:420px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        border-radius:25px;
+        padding:40px 35px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.25);
+        animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn{
+        from{
+            opacity:0;
+            transform:translateY(20px);
+        }
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+    }
+
+    .login-logo{
+        text-align:center;
+        margin-bottom:30px;
+    }
+
+    .login-logo i{
+        font-size:60px;
+        color:#2e7d32;
+        margin-bottom:10px;
+    }
+
+    .login-logo h2{
+        font-weight:700;
+        color:#1b5e20;
+    }
+
+    .login-logo p{
+        color:#666;
+        font-size:14px;
+    }
+
+    .form-control{
+        height:50px;
+        border-radius:12px;
+        padding-left:45px;
+        border:1px solid #ddd;
+        transition:0.3s;
+    }
+
+    .form-control:focus{
+        border-color:#2e7d32;
+        box-shadow:0 0 0 0.15rem rgba(46,125,50,0.25);
+    }
+
+    .input-group{
+        position:relative;
+        margin-bottom:20px;
+    }
+
+    .input-group i{
+        position:absolute;
+        left:15px;
+        top:15px;
+        color:#777;
+        z-index:10;
+    }
+
+    .btn-login{
+        width:100%;
+        height:50px;
+        border:none;
+        border-radius:12px;
+        background: linear-gradient(135deg, #2e7d32, #43a047);
+        color:white;
+        font-weight:600;
+        font-size:16px;
+        transition:0.3s;
+    }
+
+    .btn-login:hover{
+        transform:translateY(-2px);
+        box-shadow:0 8px 20px rgba(46,125,50,0.3);
+    }
+
+    .extra-links{
+        margin-top:20px;
+        text-align:center;
+    }
+
+    .extra-links a{
+        text-decoration:none;
+        color:#2e7d32;
+        font-size:14px;
+        font-weight:500;
+    }
+
+    .extra-links a:hover{
+        text-decoration:underline;
+    }
+
+    .system-info{
+        text-align:center;
+        margin-top:25px;
+        color:#666;
+        font-size:13px;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="login-logo">
+            <i class="fa-solid fa-seedling"></i>
+
+            <h2>E-Farm System</h2>
+
+            <p>
+                Farm Input Registration, Disbursement & Collection Platform
+            </p>
+        </div>
+
+        <form action="{{ url_for('login') }}" method="POST">
+
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+
+                <input 
+                    type="text" 
+                    name="username"
+                    class="form-control" 
+                    placeholder="Enter Username"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+
+                <input 
+                    type="password"
+                    name="password" 
+                    class="form-control" 
+                    placeholder="Enter Password"
+                    required
+                >
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        id="rememberMe"
+                    >
+
+                   
+                </div>
+
+                <a href="#" class="text-decoration-none text-success">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <button type="submit" class="btn btn-login">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Login
+            </button>
+
+        </form>
+
+        <div class="extra-links">
+            <p>
+                Don't have an account?
+                <a href="#">Create Account</a>
+            </p>
+        </div>
+
+        <div class="system-info">
+            <p>
+                © 2026 Ministry of Agriculture | E-Farm System
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

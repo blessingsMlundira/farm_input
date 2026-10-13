@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Add Payment | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h3 class="fw-bold text-success">
+        <i class="fa-solid fa-money-bill-wave"></i> Loan Repayment
+    </h3>
+    <p class="text-muted">Record farmer loan repayments and update outstanding balances.</p>
+</div>
+
+<div class="dashboard-card">
+
+    <form action="{{ url_for('add_payment') }}" method="POST">
+
+        <div class="row g-4">
+
+            <!-- Farmer Selection -->
+            <div class="col-md-6">
+
+                <label class="form-label">Select Farmer</label>
+
+                <select
+                    class="form-select"
+                    name="farmer_id"
+                    id="farmerSelect"
+                    required
+                >
+
+                    <option value="">-- Select Farmer --</option>
+
+                    {% for farmer in farmers %}
+                        <option value="{{ farmer.id }}">
+                            F{{ "%03d"|format(farmer.id) }} - {{ farmer.full_name }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- LIVE BALANCE BOX -->
+            <div class="col-md-6">
+
+                <label class="form-label">Loan Balance</label>
+
+                <div class="p-3 border rounded bg-light">
+
+                    <div>Total Loan: <strong id="totalLoan">K 0</strong></div>
+                    <div>Total Paid: <strong id="totalPaid">K 0</strong></div>
+
+                    <hr>
+
+                    <div class="text-danger fs-5">
+                        Remaining: <strong id="remaining">K 0</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Payment Date -->
+            <div class="col-md-6">
+                <label class="form-label">Payment Date</label>
+                <input type="date" name="payment_date" class="form-control" required>
+            </div>
+
+            <!-- Amount Paid -->
+            <div class="col-md-6">
+                <label class="form-label">Amount Paid (K)</label>
+                <input type="number" name="amount_paid" class="form-control" required>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="col-md-6">
+                <label class="form-label">Payment Method</label>
+                <select class="form-select" name="payment_method">
+                    <option>Cash</option>
+                    <option>Mobile Money</option>
+                    <option>Bank Transfer</option>
+                </select>
+            </div>
+
+            <!-- Month -->
+            <div class="col-md-6">
+                <label class="form-label">Month</label>
+                <select class="form-select" name="payment_month">
+                    <option>January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                </select>
+            </div>
+
+            <!-- Year -->
+            <div class="col-md-6">
+                <label class="form-label">Year</label>
+                <input type="number" name="payment_year" class="form-control" value="2026">
+            </div>
+
+            <!-- Remarks -->
+            <div class="col-md-12">
+                <label class="form-label">Remarks</label>
+                <textarea class="form-control" name="remarks" rows="3"></textarea>
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+
+            <button type="reset" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+            </button>
+
+            <button type="submit" class="btn btn-warning">
+                <i class="fa-solid fa-floppy-disk"></i> Save Payment
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+document.getElementById("farmerSelect").addEventListener("change", async function () {
+
+    const farmerId = this.value;
+
+    if (!farmerId) {
+        document.getElementById("totalLoan").innerText = "K 0";
+        document.getElementById("totalPaid").innerText = "K 0";
+        document.getElementById("remaining").innerText = "K 0";
+        return;
+    }
+
+    try {
+
+        const response = await fetch(`/api/farmer-balance/${farmerId}`);
+        const data = await response.json();
+
+        document.getElementById("totalLoan").innerText =
+            "K " + data.total_loan.toLocaleString();
+
+        document.getElementById("totalPaid").innerText =
+            "K " + data.total_paid.toLocaleString();
+
+        document.getElementById("remaining").innerText =
+            "K " + data.remaining.toLocaleString();
+
+    } catch (error) {
+        console.error("Error loading balance:", error);
+    }
+
+});
+
+</script>
+
+{% endblock %}

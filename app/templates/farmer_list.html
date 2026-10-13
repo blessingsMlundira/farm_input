@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Farmers List | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-users"></i> Registered Farmers
+        </h3>
+        <p class="text-muted">View and manage all farmers in the system.</p>
+    </div>
+
+    <a href="{{ url_for('add_farmer') }}" class="btn btn-success">
+        <i class="fa-solid fa-user-plus"></i> Add Farmer
+    </a>
+
+</div>
+
+<div class="dashboard-card">
+
+    <!-- Search Bar -->
+    <div class="mb-3">
+        <input type="text" class="form-control" placeholder="Search farmer by name, district or ID...">
+    </div>
+
+    <!-- Farmers Table -->
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-success">
+                <tr>
+                    <th>#ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>District</th>
+                    <th>Phone</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if farmers|length == 0 %}
+
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            No farmers registered yet.
+                        </td>
+                    </tr>
+
+                    {% endif %}
+
+    {% for farmer in farmers %}
+
+    <tr>
+
+        <!-- ID -->
+        <td>F{{ "%03d"|format(farmer.id) }}</td>
+
+        <!-- Name -->
+        <td>{{ farmer.full_name }}</td>
+
+        <!-- Age -->
+        <td>{{ farmer.age }}</td>
+
+        <!-- Gender -->
+        <td>{{ farmer.gender }}</td>
+
+        <!-- District -->
+        <td>{{ farmer.district }}</td>
+
+        <!-- Phone -->
+        <td>{{ farmer.phone }}</td>
+
+        <!-- Type -->
+        <td>{{ farmer.farmer_type }}</td>
+
+        <!-- Status (static for now) -->
+        <td>
+            <span class="badge bg-success">Active</span>
+        </td>
+
+        <!-- Actions -->
+       <td>
+            <a href="{{ url_for('farmer_profile', farmer_id=farmer.id) }}" class="btn btn-sm btn-primary">
+                <i class="fa-solid fa-eye"></i>
+            </a>
+
+            
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

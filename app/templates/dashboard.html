@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | E-Farm System{% endblock %}
+
+{% block content %}
+
+<!-- ===================================================== -->
+<!-- DASHBOARD HEADER -->
+<!-- ===================================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+
+    <div>
+        <h3 class="fw-bold text-success mb-1">
+            <i class="fa-solid fa-gauge-high"></i>
+            Dashboard Overview
+        </h3>
+
+        <p class="text-muted mb-0">
+            Monitor farmers, disbursements, repayments and system activity.
+        </p>
+    </div>
+
+    
+
+</div>
+
+<!-- ===================================================== -->
+<!-- STATISTICS CARDS -->
+<!-- ===================================================== -->
+
+<div class="row g-4">
+
+    <!-- TOTAL FARMERS -->
+    <div class="col-md-3">
+
+        <div class="dashboard-card h-100">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-1">
+                        Registered Farmers
+                    </p>
+
+                    <h2 class="fw-bold text-success">
+                        {{ total_farmers }}
+                    </h2>
+
+                    <small class="text-muted">
+                        Total farmers in database
+                    </small>
+
+                </div>
+
+                <div class="icon bg-green">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TOTAL DISBURSEMENTS -->
+    <div class="col-md-3">
+
+        <div class="dashboard-card h-100">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-1">
+                        Inputs Distributed
+                    </p>
+
+                    <h2 class="fw-bold text-primary">
+                        {{ total_disbursements }}
+                    </h2>
+
+                    <small class="text-muted">
+                        Total disbursement records
+                    </small>
+
+                </div>
+
+                <div class="icon bg-blue">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TOTAL REPAYMENTS -->
+    <div class="col-md-3">
+
+        <div class="dashboard-card h-100">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-1">
+                        Total Repayments
+                    </p>
+
+                    <h2 class="fw-bold text-warning">
+                        K {{ "{:,.0f}".format(total_repayments) }}
+                    </h2>
+
+                    <small class="text-muted">
+                        Total collected repayments
+                    </small>
+
+                </div>
+
+                <div class="icon bg-orange">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- OUTSTANDING BALANCE -->
+    <div class="col-md-3">
+
+        <div class="dashboard-card h-100">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-1">
+                        Outstanding Balance
+                    </p>
+
+                    <h2 class="fw-bold text-danger">
+                        K {{ "{:,.0f}".format(outstanding_balance) }}
+                    </h2>
+
+                    <small class="text-muted">
+                        Pending repayments
+                    </small>
+
+                </div>
+
+                <div class="icon bg-red">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- CHARTS -->
+<!-- ===================================================== -->
+
+<div class="row mt-5 g-4">
+
+    <!-- FARMER CHART -->
+    <div class="col-lg-6">
+
+        <div class="dashboard-card">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="mb-0">
+                    <i class="fa-solid fa-chart-line text-success"></i>
+                    Farmer Statistics
+                </h5>
+
+            </div>
+
+            <canvas id="farmerChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- REPAYMENT CHART -->
+    <div class="col-lg-6">
+
+        <div class="dashboard-card">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="mb-0">
+                    <i class="fa-solid fa-chart-pie text-primary"></i>
+                    Loan Repayment Overview
+                </h5>
+
+            </div>
+
+            <canvas id="repaymentChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- RECENT ACTIVITY -->
+<!-- ===================================================== -->
+
+<div class="row mt-5">
+
+    <!-- RECENT FARMERS -->
+    <div class="col-lg-4 mb-4">
+
+        <div class="dashboard-card h-100">
+
+            <h5 class="mb-4">
+                <i class="fa-solid fa-user-plus text-success"></i>
+                Recent Farmers
+            </h5>
+
+            {% if recent_farmers %}
+
+                <div class="list-group list-group-flush">
+
+                    {% for farmer in recent_farmers %}
+
+                    <div class="list-group-item border-0 px-0">
+
+                        <div class="fw-bold">
+                            {{ farmer.full_name }}
+                        </div>
+
+                        <small class="text-muted">
+
+                            F{{ "%03d"|format(farmer.id) }}
+                            •
+                            {{ farmer.district }}
+                            •
+                            {{ farmer.farmer_type }}
+
+                        </small>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No farmer records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- RECENT DISBURSEMENTS -->
+    <div class="col-lg-4 mb-4">
+
+        <div class="dashboard-card h-100">
+
+            <h5 class="mb-4">
+                <i class="fa-solid fa-truck-fast text-primary"></i>
+                Recent Disbursements
+            </h5>
+
+            {% if recent_disbursements %}
+
+                <div class="list-group list-group-flush">
+
+                    {% for disbursement in recent_disbursements %}
+
+                    <div class="list-group-item border-0 px-0">
+
+                        <div class="fw-bold">
+
+                            {{ disbursement.farmer.full_name }}
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            {{ disbursement.disbursement_date }}
+
+                            {% if disbursement.fertilizer_bags %}
+                                • {{ disbursement.fertilizer_bags }} Bags
+                            {% endif %}
+
+                            {% if disbursement.seeds_kg %}
+                                • {{ disbursement.seeds_kg }} Kg Seeds
+                            {% endif %}
+
+                        </small>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No disbursement records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- RECENT REPAYMENTS -->
+    <div class="col-lg-4 mb-4">
+
+        <div class="dashboard-card h-100">
+
+            <h5 class="mb-4">
+                <i class="fa-solid fa-money-bill-wave text-warning"></i>
+                Recent Repayments
+            </h5>
+
+            {% if recent_repayments %}
+
+                <div class="list-group list-group-flush">
+
+                    {% for repayment in recent_repayments %}
+
+                    <div class="list-group-item border-0 px-0">
+
+                        <div class="fw-bold">
+
+                            {{ repayment.farmer.full_name }}
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            K {{ "{:,.0f}".format(repayment.amount_paid) }}
+
+                            •
+
+                            {{ repayment.payment_method }}
+
+                            •
+
+                            {{ repayment.payment_date }}
+
+                        </small>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No repayment records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+    // =====================================================
+    // FARMER STATISTICS CHART
+    // =====================================================
+
+    const farmerCtx = document
+        .getElementById('farmerChart')
+        .getContext('2d');
+
+    new Chart(farmerCtx, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: [
+                'Farmers',
+                'Disbursements'
+            ],
+
+            datasets: [{
+
+                label: 'System Statistics',
+
+                data: [
+                    {{ total_farmers }},
+                    {{ total_disbursements }}
+                ],
+
+                backgroundColor: [
+                    '#2e7d32',
+                    '#1565c0'
+                ],
+
+                borderRadius: 8
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    });
+
+    // =====================================================
+    // REPAYMENT CHART
+    // =====================================================
+
+    const repaymentCtx = document
+        .getElementById('repaymentChart')
+        .getContext('2d');
+
+    new Chart(repaymentCtx, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: [
+                'Collected',
+                'Outstanding'
+            ],
+
+            datasets: [{
+
+                data: [
+                    {{ total_repayments }},
+                    {{ outstanding_balance }}
+                ],
+
+                backgroundColor: [
+                    '#2e7d32',
+                    '#c62828'
+                ]
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}

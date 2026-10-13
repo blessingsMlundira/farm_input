@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Profile | E-Farm System{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-user"></i> Farmer Profile
+        </h3>
+        <p class="text-muted">Detailed information about the selected farmer</p>
+    </div>
+
+    <a href="{{ url_for('farmer_list') }}" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+
+</div>
+
+<!-- PROFILE CARD -->
+<div class="dashboard-card mb-4">
+
+    <div class="row align-items-center">
+
+        <!-- Profile Image -->
+        <div class="col-md-3 text-center">
+
+            <i class="fa-solid fa-user-circle fa-7x text-secondary"></i>
+
+            <h5 class="mt-3 mb-0">{{ farmer.full_name }}</h5>
+
+            <small class="text-muted">
+                Farmer ID: F{{ "%03d"|format(farmer.id) }}
+            </small>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="col-md-9">
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <strong>Age:</strong>
+                    <p class="text-muted mb-0">{{ farmer.age }}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Gender:</strong>
+                    <p class="text-muted mb-0">{{ farmer.gender }}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Nationality:</strong>
+                    <p class="text-muted mb-0">{{ farmer.nationality }}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Phone:</strong>
+                    <p class="text-muted mb-0">{{ farmer.phone }}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Email:</strong>
+                    <p class="text-muted mb-0">{{ farmer.email or '-' }}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Status:</strong><br>
+                    <span class="badge bg-success">Active</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LOCATION INFO -->
+<div class="dashboard-card mb-4">
+
+    <h5 class="mb-3 text-success">
+        <i class="fa-solid fa-location-dot"></i> Location Details
+    </h5>
+
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <strong>Village Headman:</strong>
+            <p class="text-muted mb-0">{{ farmer.village_headman }}</p>
+        </div>
+
+        <div class="col-md-4">
+            <strong>Traditional Authority:</strong>
+            <p class="text-muted mb-0">{{ farmer.traditional_authority }}</p>
+        </div>
+
+        <div class="col-md-4">
+            <strong>District:</strong>
+            <p class="text-muted mb-0">{{ farmer.district }}</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LOAN SUMMARY -->
+<div class="dashboard-card mb-4">
+
+    <h5 class="mb-3 text-primary">
+        <i class="fa-solid fa-coins"></i> Loan Summary
+    </h5>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <strong>Total Disbursed</strong>
+            <h4>K {{ "{:,.0f}".format(total_disbursed) }}</h4>
+        </div>
+
+        <div class="col-md-4">
+            <strong>Total Paid</strong>
+            <h4>K {{ "{:,.0f}".format(total_paid) }}</h4>
+        </div>
+
+        <div class="col-md-4">
+            <strong>Balance</strong>
+            <h4 class="{% if balance > 0 %}text-danger{% else %}text-success{% endif %}">
+                K {{ "{:,.0f}".format(balance) }}
+            </h4>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FARMING RECORDS -->
+<div class="row g-4">
+
+    <!-- DISBURSEMENTS -->
+    <div class="col-md-6">
+
+        <div class="dashboard-card">
+
+            <h5 class="mb-3 text-primary">
+                <i class="fa-solid fa-truck-fast"></i> Input Disbursements
+            </h5>
+
+            <ul class="list-group list-group-flush">
+
+                {% for d in farmer.disbursements %}
+
+                <li class="list-group-item">
+                    {% if d.fertilizer_bags %}
+                        Fertilizer: {{ d.fertilizer_bags }} Bags ({{ d.fertilizer_type }})
+                    {% elif d.seeds_kg %}
+                        Seeds: {{ d.seeds_kg }} Kg ({{ d.seed_type }})
+                    {% elif d.chemicals_litres %}
+                        Chemicals: {{ d.chemicals_litres }} L ({{ d.chemical_type }})
+                    {% endif %}
+
+                    <span class="float-end text-muted">
+                        {{ d.disbursement_date }}
+                    </span>
+                </li>
+
+                {% else %}
+                <li class="list-group-item text-muted">No disbursements yet</li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- REPAYMENTS -->
+    <div class="col-md-6">
+
+        <div class="dashboard-card">
+
+            <h5 class="mb-3 text-warning">
+                <i class="fa-solid fa-money-bill-wave"></i> Loan Repayments
+            </h5>
+
+            <ul class="list-group list-group-flush">
+
+                {% for r in farmer.repayments %}
+
+                <li class="list-group-item">
+                    Paid: K {{ "{:,.0f}".format(r.amount_paid) }}
+                    <span class="float-end text-muted">
+                        {{ r.payment_date }}
+                    </span>
+                </li>
+
+                {% else %}
+                <li class="list-group-item text-muted">No repayments yet</li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ACTION BUTTONS -->
+<!-- <div class="mt-4 d-flex justify-content-end gap-2">
+
+    <button class="btn btn-warning">
+        <i class="fa-solid fa-pen"></i> Edit Profile
+    </button>
+
+    <button class="btn btn-danger">
+        <i class="fa-solid fa-trash"></i> Delete Farmer
+    </button>
+
+</div> -->
+
+{% endblock %}

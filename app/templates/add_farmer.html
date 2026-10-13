@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Register Farmer | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h3 class="fw-bold text-success">
+        <i class="fa-solid fa-user-plus"></i> Register New Farmer
+    </h3>
+    <p class="text-muted">Capture farmer biodata and location details.</p>
+</div>
+
+<div class="dashboard-card">
+
+    <form action="{{ url_for('add_farmer') }}" method="POST">
+
+        <div class="row g-4">
+
+            <!-- Full Name -->
+            <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input name="full_name" type="text" class="form-control" placeholder="Enter full name" required>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="col-md-6">
+                <label class="form-label">Date of Birth</label>
+                <input name="date_of_birth" type="date" class="form-control" required>
+            </div>
+
+            <!-- Age -->
+            <div class="col-md-4">
+                <label class="form-label">Age</label>
+                <input name="age" type="number" class="form-control" placeholder="Age" required>
+            </div>
+
+            <!-- Nationality -->
+            <div class="col-md-4">
+                <label class="form-label">Nationality</label>
+                <input type="text" name="nationality" class="form-control" placeholder="e.g. Malawian" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="col-md-4">
+                <label class="form-label">Phone Number</label>
+                <input type="text" name="phone" class="form-control" placeholder="e.g. 088..." required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+                <label class="form-label">Email (Optional)</label>
+                <input type="email" name="email" class="form-control" placeholder="example@email.com">
+            </div>
+
+            <!-- Village Headman -->
+            <div class="col-md-6">
+                <label class="form-label">Village Headman</label>
+                <input type="text" name="village_headman" class="form-control" placeholder="Headman name" required>
+            </div>
+
+            <!-- Traditional Authority -->
+            <div class="col-md-6">
+                <label class="form-label">Traditional Authority</label>
+                <input type="text" name="traditional_authority" class="form-control" placeholder="T/A name" required>
+            </div>
+
+            <!-- District -->
+            <div class="col-md-6">
+                <label class="form-label">District</label>
+                <input type="text" name="district" class="form-control" placeholder="District name" required>
+            </div>
+
+            <!-- Gender -->
+            <div class="col-md-6">
+                <label class="form-label">Gender</label>
+                <select name="gender" class="form-select" required>
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+
+            <!-- Farmer Type -->
+            <div class="col-md-6">
+                <label class="form-label">Farmer Type</label>
+                <select name="farmer_type" class="form-select" required>
+                    <option value="">Select Type</option>
+                    <option>Individual</option>
+                    <option>Group</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+
+            <button type="reset" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+            </button>
+
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-floppy-disk"></i> Save Farmer
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

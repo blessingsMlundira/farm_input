@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block title %}Add Disbursement | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h3 class="fw-bold text-success">
+        <i class="fa-solid fa-truck-fast"></i> Input Disbursement
+    </h3>
+
+    <p class="text-muted">
+        Record and manage farm input distribution with loan values attached.
+    </p>
+</div>
+
+<div class="dashboard-card">
+
+    <form action="{{ url_for('add_disbursement') }}" method="POST">
+
+        <div class="row g-4">
+
+            <!-- Farmer Selection -->
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Select Farmer / Group
+                </label>
+
+                <select
+                    class="form-select"
+                    name="farmer_id"
+                    required
+                >
+
+                    <option value="">
+                        -- Select Farmer --
+                    </option>
+
+                    {% for farmer in farmers %}
+
+                        <option value="{{ farmer.id }}">
+
+                            F{{ "%03d"|format(farmer.id) }}
+                            -
+                            {{ farmer.full_name }}
+
+                            {% if farmer.farmer_type == "Group" %}
+                                (Group)
+                            {% endif %}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- Disbursement Date -->
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Disbursement Date
+                </label>
+
+                <input
+                    type="date"
+                    name="disbursement_date"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- FERTILIZER SECTION -->
+            <!-- ========================================= -->
+
+            <div class="col-12 mt-4">
+                <h5 class="text-primary border-bottom pb-2">
+                    <i class="fa-solid fa-seedling"></i>
+                    Fertilizer Details
+                </h5>
+            </div>
+
+            <!-- Fertilizer Bags -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Fertilizer (Bags)
+                </label>
+
+                <input
+                    type="number"
+                    name="fertilizer_bags"
+                    id="fertilizer_bags"
+                    class="form-control"
+                    placeholder="e.g. 5"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+            <!-- Fertilizer Type -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Fertilizer Type
+                </label>
+
+                <select
+                    class="form-select"
+                    name="fertilizer_type"
+                >
+                    <option value="Urea">Urea</option>
+                    <option value="NPK">NPK</option>
+                    <option value="CAN">CAN</option>
+                </select>
+
+            </div>
+
+            <!-- Fertilizer Unit Price -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Price Per Bag (K)
+                </label>
+
+                <input
+                    type="number"
+                    name="fertilizer_unit_price"
+                    id="fertilizer_unit_price"
+                    class="form-control"
+                    placeholder="e.g. 55000"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+            <!-- Fertilizer Total -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Fertilizer Total (K)
+                </label>
+
+                <input
+                    type="number"
+                    name="fertilizer_total"
+                    id="fertilizer_total"
+                    class="form-control bg-light"
+                    readonly
+                >
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- SEEDS SECTION -->
+            <!-- ========================================= -->
+
+            <div class="col-12 mt-4">
+                <h5 class="text-success border-bottom pb-2">
+                    <i class="fa-solid fa-wheat-awn"></i>
+                    Seed Details
+                </h5>
+            </div>
+
+            <!-- Seeds Quantity -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Seeds (Kg)
+                </label>
+
+                <input
+                    type="number"
+                    name="seeds_kg"
+                    id="seeds_kg"
+                    class="form-control"
+                    placeholder="e.g. 10"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+            <!-- Seed Type -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Seed Type
+                </label>
+
+                <select
+                    class="form-select"
+                    name="seed_type"
+                >
+                    <option value="Maize">Maize</option>
+                    <option value="Beans">Beans</option>
+                    <option value="Soya">Soya</option>
+                </select>
+
+            </div>
+
+            <!-- Seed Unit Price -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Price Per Kg (K)
+                </label>
+
+                <input
+                    type="number"
+                    name="seed_unit_price"
+                    id="seed_unit_price"
+                    class="form-control"
+                    placeholder="e.g. 2500"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+            <!-- Seed Total -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Seed Total (K)
+                </label>
+
+                <input
+                    type="number"
+                    name="seed_total"
+                    id="seed_total"
+                    class="form-control bg-light"
+                    readonly
+                >
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- CHEMICALS SECTION -->
+            <!-- ========================================= -->
+
+            <div class="col-12 mt-4">
+                <h5 class="text-warning border-bottom pb-2">
+                    <i class="fa-solid fa-flask"></i>
+                    Chemical Details
+                </h5>
+            </div>
+
+            <!-- Chemical Quantity -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Chemicals (Litres)
+                </label>
+
+                <input
+                    type="number"
+                    name="chemicals_litres"
+                    id="chemicals_litres"
+                    class="form-control"
+                    placeholder="e.g. 2"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+            <!-- Chemical Type -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Chemical Type
+                </label>
+
+                <select
+                    class="form-select"
+                    name="chemical_type"
+                >
+                    <option value="Herbicide">Herbicide</option>
+                    <option value="Pesticide">Pesticide</option>
+                    <option value="Fungicide">Fungicide</option>
+                </select>
+
+            </div>
+
+            <!-- Chemical Unit Price -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Price Per Litre (K)
+                </label>
+
+                <input
+                    type="number"
+                    name="chemical_unit_price"
+                    id="chemical_unit_price"
+                    class="form-control"
+                    placeholder="e.g. 12000"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+            <!-- Chemical Total -->
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Chemical Total (K)
+                </label>
+
+                <input
+                    type="number"
+                    name="chemical_total"
+                    id="chemical_total"
+                    class="form-control bg-light"
+                    readonly
+                >
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- TOTAL LOAN -->
+            <!-- ========================================= -->
+
+            <div class="col-12 mt-4">
+
+                <div class="alert alert-primary">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-md-6">
+                            <h4 class="mb-0">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                                Total Loan Amount
+                            </h4>
+                        </div>
+
+                        <div class="col-md-6 text-md-end">
+
+                            <h2 class="fw-bold mb-0">
+                                K <span id="grand_total">0</span>
+                            </h2>
+
+                            <input
+                                type="hidden"
+                                name="total_loan_amount"
+                                id="total_loan_amount"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Remarks -->
+            <div class="col-md-12">
+
+                <label class="form-label">
+                    Remarks
+                </label>
+
+                <textarea
+                    class="form-control"
+                    name="remarks"
+                    rows="3"
+                    placeholder="Optional notes..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+
+            <button type="reset" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-rotate-left"></i>
+                Reset
+            </button>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Disbursement
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+    function calculateTotals() {
+
+        // Fertilizer
+        let fertilizerBags =
+            parseFloat(document.getElementById('fertilizer_bags').value) || 0;
+
+        let fertilizerPrice =
+            parseFloat(document.getElementById('fertilizer_unit_price').value) || 0;
+
+        let fertilizerTotal =
+            fertilizerBags * fertilizerPrice;
+
+        document.getElementById('fertilizer_total').value =
+            fertilizerTotal;
+
+
+        // Seeds
+        let seedsKg =
+            parseFloat(document.getElementById('seeds_kg').value) || 0;
+
+        let seedPrice =
+            parseFloat(document.getElementById('seed_unit_price').value) || 0;
+
+        let seedTotal =
+            seedsKg * seedPrice;
+
+        document.getElementById('seed_total').value =
+            seedTotal;
+
+
+        // Chemicals
+        let chemicalLitres =
+            parseFloat(document.getElementById('chemicals_litres').value) || 0;
+
+        let chemicalPrice =
+            parseFloat(document.getElementById('chemical_unit_price').value) || 0;
+
+        let chemicalTotal =
+            chemicalLitres * chemicalPrice;
+
+        document.getElementById('chemical_total').value =
+            chemicalTotal;
+
+
+        // Grand Total
+        let grandTotal =
+            fertilizerTotal +
+            seedTotal +
+            chemicalTotal;
+
+        document.getElementById('grand_total').innerText =
+            grandTotal.toLocaleString();
+
+        document.getElementById('total_loan_amount').value =
+            grandTotal;
+    }
+
+
+    // Auto calculate on input
+    document.querySelectorAll('input').forEach(input => {
+
+        input.addEventListener('input', calculateTotals);
+
+    });
+
+</script>
+
+{% endblock %}

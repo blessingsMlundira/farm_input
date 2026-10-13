@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Farm Input System{% endblock %}</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fc;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar{
+            width:260px;
+            height:100vh;
+            position:fixed;
+            top:0;
+            left:0;
+            background: linear-gradient(180deg, #1b5e20, #2e7d32);
+            color:white;
+            padding-top:20px;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index:1000;
+        }
+
+        .sidebar .logo{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .sidebar .logo h3{
+            font-weight:700;
+            letter-spacing:1px;
+        }
+
+        .sidebar a{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            color:white;
+            text-decoration:none;
+            padding:14px 25px;
+            transition:0.3s;
+            font-size:15px;
+        }
+
+        .sidebar a:hover{
+            background: rgba(255,255,255,0.15);
+            border-left:5px solid #ffc107;
+            padding-left:20px;
+        }
+
+        .sidebar a i,
+        .sidebar a span{
+            font-size:20px;
+        }
+
+        /* Main Content */
+        .main-content{
+            margin-left:260px;
+            padding:20px;
+        }
+
+        /* Navbar */
+        .top-navbar{
+            background:white;
+            border-radius:15px;
+            padding:15px 25px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.08);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:25px;
+        }
+
+        .top-navbar h4{
+            margin:0;
+            font-weight:600;
+            color:#2e7d32;
+        }
+
+        .profile-box{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .profile-box img{
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            object-fit:cover;
+        }
+
+        /* Cards */
+        .dashboard-card{
+            background:white;
+            border:none;
+            border-radius:20px;
+            padding:25px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.08);
+            transition:0.3s;
+        }
+
+        .dashboard-card:hover{
+            transform:translateY(-5px);
+        }
+
+        .dashboard-card .icon{
+            width:60px;
+            height:60px;
+            border-radius:15px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:28px;
+            color:white;
+            margin-bottom:15px;
+        }
+
+        .bg-green{
+            background:#2e7d32;
+        }
+
+        .bg-blue{
+            background:#1565c0;
+        }
+
+        .bg-orange{
+            background:#ef6c00;
+        }
+
+        .bg-red{
+            background:#c62828;
+        }
+
+        /* Footer */
+        footer{
+            text-align:center;
+            margin-top:30px;
+            color:#777;
+            font-size:14px;
+        }
+
+        /* Responsive */
+        @media(max-width:768px){
+
+            .sidebar{
+                width:80px;
+            }
+
+            .sidebar .logo h3,
+            .sidebar a span.text{
+                display:none;
+            }
+
+            .main-content{
+                margin-left:80px;
+            }
+
+            .sidebar a{
+                justify-content:center;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <div class="logo">
+            <h3>
+                <i class="fa-solid fa-seedling"></i>
+                <span class="text">E-Farm</span>
+            </h3>
+        </div>
+
+        {% set user_role = (session.get('account_type') or 'administrator') | lower %}
+
+        {% if user_role in ['administrator', 'registration officer', 'disbursement officer', 'collection officer'] %}
+        <a href="/dashboard">
+            <i class="fa-solid fa-chart-line"></i>
+            <span class="text">Dashboard</span>
+        </a>
+        {% endif %}
+
+        {% if user_role == 'administrator' %}
+        <a href="/add-user">
+            <i class="fa-solid fa-user-plus"></i>
+            <span class="text">Add User</span>
+        </a>
+        {% endif %}
+
+        {% if user_role == 'registration officer' %}
+        <a href="/farmers">
+            <i class="fa-solid fa-users"></i>
+            <span class="text">Farmers</span>
+        </a>
+        {% endif %}
+
+        {% if user_role == 'disbursement officer' %}
+        <a href="/disbursements">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span class="text">Disbursement</span>
+        </a>
+        {% endif %}
+
+        {% if user_role == 'collection officer' %}
+        <a href="/repayments">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            <span class="text">Repayments</span>
+        </a>
+        {% endif %}
+
+        {% if user_role in ['registration officer', 'disbursement officer', 'collection officer'] %}
+        <a href="/reports">
+            <i class="fa-solid fa-file-lines"></i>
+            <span class="text">Reports</span>
+        </a>
+        {% endif %}
+
+        <a href="/logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="text">Logout</span>
+        </a>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+
+            <h4>
+                <i class="fa-solid fa-leaf text-success"></i>
+                E-Farm Input Management System
+            </h4>
+
+            <div class="profile-box">
+                <div>
+                    <strong>{{ (session.get('user') or 'User') }}</strong><br>
+                    <small class="text-muted">{{ (session.get('account_type') or 'administrator') | title }}</small>
+                </div>
+
+                <i class="fa-solid fa-user fa-2x text-secondary"></i>
+            </div>
+
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        {% block content %}
+        {% endblock %}
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                &copy; 2026 E-Farm Input Registration, Disbursement & Collection System
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

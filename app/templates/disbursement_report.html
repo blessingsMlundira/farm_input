@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Disbursement Report | E-Farm System{% endblock %}
+
+{% block content %}
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-truck-fast"></i> Disbursement Report
+        </h3>
+        <p class="text-muted">Summary of all farm input distributions</p>
+    </div>
+
+</div>
+
+<div class="dashboard-card">
+
+    
+    
+
+    <!-- FILTERS -->
+    <form method="GET" class="row mb-3 g-2">
+
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                name="search"
+                value="{{ request.args.get('search', '') }}"
+                class="form-control"
+                placeholder="Search farmer or ID..."
+            >
+        </div>
+
+        <div class="col-md-3">
+            <select name="input_type" class="form-select">
+                <option value="">All Inputs</option>
+                <option value="fertilizer">Fertilizer</option>
+                <option value="seeds">Seeds</option>
+                <option value="chemicals">Chemicals</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input 
+                type="date"
+                name="date"
+                value="{{ request.args.get('date','') }}"
+                class="form-control"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+        </div>
+
+    </form>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Farmer</th>
+                    <th>Input Type</th>
+                    <th>Quantity</th>
+                    <th>Date</th>
+                    <th>District</th>
+                    
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% if disbursements|length == 0 %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        No disbursement records found.
+                    </td>
+                </tr>
+                {% endif %}
+
+                {% for d in disbursements %}
+
+                <tr>
+                    <td>D{{ "%03d"|format(d.id) }}</td>
+
+                    <td>{{ d.farmer.full_name }}</td>
+
+                    <td>
+                        {% if d.fertilizer_bags %}
+                            Fertilizer ({{ d.fertilizer_type }})
+                        {% elif d.seeds_kg %}
+                            Seeds ({{ d.seed_type }})
+                        {% elif d.chemicals_litres %}
+                            Chemicals ({{ d.chemical_type }})
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if d.fertilizer_bags %}
+                            {{ d.fertilizer_bags }} Bags
+                        {% elif d.seeds_kg %}
+                            {{ d.seeds_kg }} Kg
+                        {% elif d.chemicals_litres %}
+                            {{ d.chemicals_litres }} L
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>{{ d.disbursement_date }}</td>
+
+                    <td>{{ d.farmer.district }}</td>
+
+                    
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

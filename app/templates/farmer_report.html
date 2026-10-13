@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Report | E-Farm System{% endblock %}
+
+{% block content %}
+
+<!-- ===================================================== -->
+<!-- HEADER -->
+<!-- ===================================================== -->
+
+<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap">
+
+    <div>
+        <h3 class="fw-bold text-success">
+            <i class="fa-solid fa-file-lines"></i> Farmer Report
+        </h3>
+        <p class="text-muted">
+            Summary of all registered farmers in the system
+        </p>
+    </div>
+
+    <!-- <div class="mt-2 mt-md-0">
+
+        <button class="btn btn-primary">
+            <i class="fa-solid fa-download"></i> Export PDF
+        </button>
+
+        <button class="btn btn-success">
+            <i class="fa-solid fa-file-excel"></i> Export Excel
+        </button>
+
+    </div> -->
+
+</div>
+
+<!-- ===================================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ===================================================== -->
+
+<div class="row g-3 mb-4">
+
+    <!-- TOTAL FARMERS -->
+    <div class="col-md-4">
+
+        <div class="p-3 bg-success text-white rounded-3">
+
+            <h5>Total Farmers</h5>
+
+            <h2>
+                {{ total_farmers }}
+            </h2>
+
+        </div>
+
+    </div>
+
+    <!-- INDIVIDUAL FARMERS -->
+    <div class="col-md-4">
+
+        <div class="p-3 bg-primary text-white rounded-3">
+
+            <h5>Individual Farmers</h5>
+
+            <h2>
+                {{ individual_farmers }}
+            </h2>
+
+        </div>
+
+    </div>
+
+    <!-- GROUP FARMERS -->
+    <div class="col-md-4">
+
+        <div class="p-3 bg-warning text-dark rounded-3">
+
+            <h5>Farmer Groups</h5>
+
+            <h2>
+                {{ group_farmers }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- FILTERS -->
+<!-- ===================================================== -->
+
+<form method="GET" action="{{ url_for('farmer_report') }}">
+
+    <div class="row mb-3 g-2">
+
+        <!-- SEARCH -->
+        <div class="col-md-4">
+            <input type="text"
+                   name="search"
+                   value="{{ search_query }}"
+                   class="form-control"
+                   placeholder="Search farmer...">
+        </div>
+
+        <!-- DISTRICT -->
+        <div class="col-md-3">
+
+            <select class="form-select" name="district">
+
+                <option>All Districts</option>
+                <option {% if district_filter == "Lilongwe" %}selected{% endif %}>Lilongwe</option>
+                <option {% if district_filter == "Blantyre" %}selected{% endif %}>Blantyre</option>
+                <option {% if district_filter == "Mzimba" %}selected{% endif %}>Mzimba</option>
+
+            </select>
+
+        </div>
+
+        <!-- TYPE -->
+        <div class="col-md-3">
+
+            <select class="form-select" name="type">
+
+                <option>All Types</option>
+                <option {% if type_filter == "Individual" %}selected{% endif %}>Individual</option>
+                <option {% if type_filter == "Group" %}selected{% endif %}>Group</option>
+
+            </select>
+
+        </div>
+
+        <!-- BUTTON -->
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+        </div>
+
+    </div>
+
+</form>
+
+<!-- ===================================================== -->
+<!-- TABLE -->
+<!-- ===================================================== -->
+
+<div class="table-responsive">
+
+    <table class="table table-hover align-middle">
+
+        <thead class="table-success">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>District</th>
+                <th>TA</th>
+                <th>Phone</th>
+                <th>Type</th>
+                <th>Registered Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% if farmers %}
+
+                {% for farmer in farmers %}
+
+                <tr>
+
+                    <td>
+                        F{{ "%03d"|format(farmer.id) }}
+                    </td>
+
+                    <td>
+                        {{ farmer.full_name }}
+                    </td>
+
+                    <td>
+                        {{ farmer.district }}
+                    </td>
+
+                    <td>
+                        {{ farmer.traditional_authority }}
+                    </td>
+
+                    <td>
+                        {{ farmer.phone }}
+                    </td>
+
+                    <td>
+
+                        {% if farmer.farmer_type == "Group" %}
+
+                            <span class="badge bg-warning text-dark">
+                                Group
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-primary">
+                                Individual
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ farmer.date_of_birth }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        No farmers found in the system.
+                    </td>
+                </tr>
+
+            {% endif %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
